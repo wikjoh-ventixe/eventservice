@@ -2,7 +2,7 @@
 
 namespace Business.Services;
 
-class EventService : IEventService
+public class EventService : IEventService
 {
 
 }
