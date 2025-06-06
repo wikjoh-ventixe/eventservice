@@ -30,6 +30,7 @@ public class EventService(IEventRepository eventRepository) : IEventService
                 EventDate = request.EventDate,
                 Category = request.Category,
                 Active = request.Active,
+                MaxBookings = request.MaxBookings
             };
 
             await _eventRepository.AddAsync(eventEntity);
@@ -52,6 +53,7 @@ public class EventService(IEventRepository eventRepository) : IEventService
                 EventDate = createdEventEntity.EventDate,
                 Category = createdEventEntity.Category,
                 Active = createdEventEntity.Active,
+                MaxBookings = createdEventEntity.MaxBookings
             };
 
             return EventResult<Event?>.Created(eventModel);
@@ -82,6 +84,7 @@ public class EventService(IEventRepository eventRepository) : IEventService
             EventDate = x.EventDate,
             Category = x.Category,
             Active = x.Active,
+            MaxBookings = x.MaxBookings,
             Packages = x.Packages.Select(x => new Package
             {
                 Id = x.Id,
@@ -114,6 +117,7 @@ public class EventService(IEventRepository eventRepository) : IEventService
             EventDate = entity.EventDate,
             Category = entity.Category,
             Active = entity.Active,
+            MaxBookings = entity.MaxBookings,
             Packages = entity.Packages.Select(x => new Package
             {
                 Id = x.Id,
@@ -150,6 +154,7 @@ public class EventService(IEventRepository eventRepository) : IEventService
             entity.EventDate = request.EventDate;
             entity.Category = request.Category;
             entity.Active = request.Active;
+            entity.MaxBookings = request.MaxBookings;
 
             _eventRepository.Update(entity);
             var result = await _eventRepository.SaveAsync();
@@ -171,6 +176,7 @@ public class EventService(IEventRepository eventRepository) : IEventService
                 EventDate = updatedEntity.EventDate,
                 Category = updatedEntity.Category,
                 Active = updatedEntity.Active,
+                MaxBookings = updatedEntity.MaxBookings,
                 Packages = updatedEntity.Packages.Select(x => new Package
                 {
                     Id = x.Id,

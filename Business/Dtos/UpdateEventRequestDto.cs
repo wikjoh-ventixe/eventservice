@@ -14,4 +14,5 @@ public class UpdateEventRequestDto
     public string? Description { get; set; }
     public string Category { get; set; } = null!;
     public bool Active { get; set; } = true;
+    public int MaxBookings { get; set; }
 }
