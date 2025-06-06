@@ -11,4 +11,6 @@ public class CreateEventRequestDto
     public DateTime EventDate { get; set; }
     public string Location { get; set; } = null!;
     public string? Description { get; set; }
+    public string Category { get; set; } = null!;
+    public bool Active { get; set; } = true;
 }

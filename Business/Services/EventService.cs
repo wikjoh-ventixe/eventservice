@@ -28,6 +28,8 @@ public class EventService(IEventRepository eventRepository) : IEventService
                 Description = request.Description,
                 Location = request.Location,
                 EventDate = request.EventDate,
+                Category = request.Category,
+                Active = request.Active,
             };
 
             await _eventRepository.AddAsync(eventEntity);
@@ -48,6 +50,8 @@ public class EventService(IEventRepository eventRepository) : IEventService
                 Description = createdEventEntity.Description,
                 Location = createdEventEntity.Location,
                 EventDate = createdEventEntity.EventDate,
+                Category = createdEventEntity.Category,
+                Active = createdEventEntity.Active,
             };
 
             return EventResult<Event?>.Created(eventModel);
@@ -76,6 +80,8 @@ public class EventService(IEventRepository eventRepository) : IEventService
             Description = x.Description,
             Location = x.Location,
             EventDate = x.EventDate,
+            Category = x.Category,
+            Active = x.Active,
             Packages = x.Packages.Select(x => new Package
             {
                 Id = x.Id,
@@ -106,6 +112,8 @@ public class EventService(IEventRepository eventRepository) : IEventService
             Description = entity.Description,
             Location = entity.Location,
             EventDate = entity.EventDate,
+            Category = entity.Category,
+            Active = entity.Active,
             Packages = entity.Packages.Select(x => new Package
             {
                 Id = x.Id,
@@ -140,6 +148,8 @@ public class EventService(IEventRepository eventRepository) : IEventService
             entity.Description = request.Description;
             entity.Location = request.Location;
             entity.EventDate = request.EventDate;
+            entity.Category = request.Category;
+            entity.Active = request.Active;
 
             _eventRepository.Update(entity);
             var result = await _eventRepository.SaveAsync();
@@ -159,6 +169,8 @@ public class EventService(IEventRepository eventRepository) : IEventService
                 Description = updatedEntity.Description,
                 Location = updatedEntity.Location,
                 EventDate = updatedEntity.EventDate,
+                Category = updatedEntity.Category,
+                Active = updatedEntity.Active,
                 Packages = updatedEntity.Packages.Select(x => new Package
                 {
                     Id = x.Id,
