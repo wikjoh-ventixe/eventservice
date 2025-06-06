@@ -63,7 +63,7 @@ public class EventService(IEventRepository eventRepository) : IEventService
     // READ
     public async Task<EventResult<IEnumerable<Event>>> GetAllEventsAsync()
     {
-        var result = await _eventRepository.GetAllAsync();
+        var result = await _eventRepository.GetAllAsync(false, null, null, x => x.Packages);
         if (!result.Succeeded)
             return EventResult<IEnumerable<Event>>.InternalServerError($"Failed retrieving event entities. {result.ErrorMessage}");
 
@@ -76,6 +76,16 @@ public class EventService(IEventRepository eventRepository) : IEventService
             Description = x.Description,
             Location = x.Location,
             EventDate = x.EventDate,
+            Packages = x.Packages.Select(x => new Package
+            {
+                Id = x.Id,
+                EventId = x.EventId,
+                Title = x.Title,
+                SeatingArrangement = x.SeatingArrangement,
+                Placement = x.Placement,
+                Price = x.Price,
+                Currency = x.Currency,
+            })
         });
 
         return EventResult<IEnumerable<Event>>.Ok(events!);
@@ -83,7 +93,7 @@ public class EventService(IEventRepository eventRepository) : IEventService
 
     public async Task<EventResult<Event?>> GetEventByIdAsync(string id)
     {
-        var result = await _eventRepository.GetOneAsync(x => x.Id == id);
+        var result = await _eventRepository.GetOneAsync(x => x.Id == id, x => x.Packages);
         if (!result.Succeeded || result.Data == null)
             return EventResult<Event?>.NotFound($"Event with id {id} not found.");
 
@@ -96,6 +106,16 @@ public class EventService(IEventRepository eventRepository) : IEventService
             Description = entity.Description,
             Location = entity.Location,
             EventDate = entity.EventDate,
+            Packages = entity.Packages.Select(x => new Package
+            {
+                Id = x.Id,
+                EventId = x.EventId,
+                Title = x.Title,
+                SeatingArrangement = x.SeatingArrangement,
+                Placement = x.Placement,
+                Price = x.Price,
+                Currency = x.Currency,
+            })
         };
 
         return EventResult<Event?>.Ok(eventModel);
@@ -126,11 +146,9 @@ public class EventService(IEventRepository eventRepository) : IEventService
             if (!result.Succeeded)
                 return EventResult<Event>.InternalServerError($"Failed updating event. {result.ErrorMessage}");
 
-            var updatedResult = await _eventRepository.GetOneAsync(x => x.Id == request.Id);
-            if (!updatedResult.Succeeded)
-                return EventResult<Event>.InternalServerError($"Failed retrieving entity after update. {updatedResult.ErrorMessage}");
-            if (updatedResult.Data == null)
-                return EventResult<Event>.InternalServerError($"Retrieved null entity after update.");
+            var updatedResult = await _eventRepository.GetOneAsync(x => x.Id == request.Id, x => x.Packages);
+            if (!updatedResult.Succeeded || updatedResult.Data == null)
+                return EventResult<Event>.InternalServerError("Failed retrieving entity after update.");
 
             var updatedEntity = updatedResult.Data;
             var updatedEvent = new Event
@@ -141,6 +159,16 @@ public class EventService(IEventRepository eventRepository) : IEventService
                 Description = updatedEntity.Description,
                 Location = updatedEntity.Location,
                 EventDate = updatedEntity.EventDate,
+                Packages = updatedEntity.Packages.Select(x => new Package
+                {
+                    Id = x.Id,
+                    EventId = x.EventId,
+                    Title = x.Title,
+                    SeatingArrangement = x.SeatingArrangement,
+                    Placement = x.Placement,
+                    Price = x.Price,
+                    Currency = x.Currency,
+                })
             };
 
             return EventResult<Event>.Ok(updatedEvent);
@@ -166,7 +194,7 @@ public class EventService(IEventRepository eventRepository) : IEventService
             _eventRepository.Delete(entity);
             var result = await _eventRepository.SaveAsync();
             if (!result.Succeeded)
-                return EventResult<bool>.InternalServerError("Failed deleting event.");
+                return EventResult<bool>.InternalServerError($"Failed deleting event with id {id}.");
 
             return EventResult<bool>.Ok(true);
         }

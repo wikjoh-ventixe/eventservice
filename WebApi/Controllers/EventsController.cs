@@ -68,7 +68,6 @@ public class EventsController(IEventService eventService) : ControllerBase
 
     // DELETE
     [HttpDelete("{id}")]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Event))]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ValidationProblemDetails))]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> Delete(string id)
@@ -77,6 +76,6 @@ public class EventsController(IEventService eventService) : ControllerBase
             return BadRequest(ModelState);
 
         var result = await _eventService.DeleteEventAsync(id);
-        return result.Succeeded ? Ok($"Id {id} successfully deleted.") : StatusCode(result.StatusCode, result.ErrorMessage);
+        return result.Succeeded ? Ok($"Event with id {id} successfully deleted.") : StatusCode(result.StatusCode, result.ErrorMessage);
     }
 }

@@ -4,6 +4,7 @@ namespace Business.Dtos;
 
 public class CreatePackageRequestDto
 {
+    public string EventId { get; set; } = null!;
     public string Title { get; set; } = null!;
     public string? SeatingArrangement { get; set; }
     public string? Placement { get; set; }

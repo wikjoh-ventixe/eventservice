@@ -12,5 +12,5 @@ public class EventEntity
     public string Location { get; set; } = null!;
     public string? Description { get; set; }
 
-    public ICollection<EventPackageEntity> Packages { get; set; } = [];
+    public ICollection<PackageEntity> Packages { get; set; } = [];
 }

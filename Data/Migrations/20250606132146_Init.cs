@@ -33,6 +33,7 @@ namespace Data.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    EventId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     SeatingArrangement = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Placement = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -42,49 +43,28 @@ namespace Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Packages", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "EventPackages",
-                columns: table => new
-                {
-                    EventId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    PackageId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_EventPackages", x => new { x.EventId, x.PackageId });
                     table.ForeignKey(
-                        name: "FK_EventPackages_Events_EventId",
+                        name: "FK_Packages_Events_EventId",
                         column: x => x.EventId,
                         principalTable: "Events",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_EventPackages_Packages_PackageId",
-                        column: x => x.PackageId,
-                        principalTable: "Packages",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_EventPackages_PackageId",
-                table: "EventPackages",
-                column: "PackageId");
+                name: "IX_Packages_EventId",
+                table: "Packages",
+                column: "EventId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "EventPackages");
+                name: "Packages");
 
             migrationBuilder.DropTable(
                 name: "Events");
-
-            migrationBuilder.DropTable(
-                name: "Packages");
         }
     }
 }

@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace Business.Models;
+﻿namespace Business.Models;
 
 public class Event
 {
@@ -10,4 +8,6 @@ public class Event
     public DateTime EventDate { get; set; }
     public string Location { get; set; } = null!;
     public string? Description { get; set; }
+
+    public IEnumerable<Package> Packages { get; set; } = [];
 }

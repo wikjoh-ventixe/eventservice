@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Data.Migrations
 {
     [DbContext(typeof(EventDbContext))]
-    [Migration("20250605231542_Init")]
+    [Migration("20250606132146_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -52,21 +52,6 @@ namespace Data.Migrations
                     b.ToTable("Events");
                 });
 
-            modelBuilder.Entity("Data.Entities.EventPackageEntity", b =>
-                {
-                    b.Property<string>("EventId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("PackageId")
-                        .HasColumnType("int");
-
-                    b.HasKey("EventId", "PackageId");
-
-                    b.HasIndex("PackageId");
-
-                    b.ToTable("EventPackages");
-                });
-
             modelBuilder.Entity("Data.Entities.PackageEntity", b =>
                 {
                     b.Property<int>("Id")
@@ -77,6 +62,10 @@ namespace Data.Migrations
 
                     b.Property<string>("Currency")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("EventId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Placement")
                         .HasColumnType("nvarchar(max)");
@@ -93,10 +82,12 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("EventId");
+
                     b.ToTable("Packages");
                 });
 
-            modelBuilder.Entity("Data.Entities.EventPackageEntity", b =>
+            modelBuilder.Entity("Data.Entities.PackageEntity", b =>
                 {
                     b.HasOne("Data.Entities.EventEntity", "Event")
                         .WithMany("Packages")
@@ -104,15 +95,7 @@ namespace Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Data.Entities.PackageEntity", "Package")
-                        .WithMany()
-                        .HasForeignKey("PackageId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Event");
-
-                    b.Navigation("Package");
                 });
 
             modelBuilder.Entity("Data.Entities.EventEntity", b =>
