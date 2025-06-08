@@ -23,6 +23,14 @@ public class EventsController(IEventService eventService) : ControllerBase
         return eventsResult.Succeeded ? Ok(events) : StatusCode(eventsResult.StatusCode, eventsResult.ErrorMessage);
     }
 
+    [HttpGet("withTicketsSold")]
+    public async Task<IActionResult> GetAllWithTicketsSold()
+    {
+        var eventsResult = await _eventService.GetAllEventsWithTicketsSoldAsync();
+        var events = eventsResult.Data;
+
+        return eventsResult.Succeeded ? Ok(events) : StatusCode(eventsResult.StatusCode, eventsResult.ErrorMessage);
+    }
 
     [HttpGet("{id}")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Event))]

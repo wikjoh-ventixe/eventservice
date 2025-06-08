@@ -8,6 +8,7 @@ public interface IEventService
     Task<EventResult<Event?>> CreateEventAsync(CreateEventRequestDto request);
     Task<EventResult<bool>> DeleteEventAsync(string id);
     Task<EventResult<IEnumerable<Event>>> GetAllEventsAsync();
+    Task<EventResult<IEnumerable<Event>>> GetAllEventsWithTicketsSoldAsync();
     Task<EventResult<Event?>> GetEventByIdAsync(string id);
     Task<EventResult<Event>> UpdateEventAsync(UpdateEventRequestDto request);
 }

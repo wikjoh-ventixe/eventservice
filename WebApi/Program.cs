@@ -3,11 +3,19 @@ using Business.Services;
 using Data.Context;
 using Data.Interfaces;
 using Data.Repositories;
+using Grpc.Net.Client;
 using Microsoft.EntityFrameworkCore;
+using Protos;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
+
+builder.Services.AddSingleton(provider =>
+{
+    var channel = GrpcChannel.ForAddress(builder.Configuration.GetValue<string>("BookingServiceApi")!);
+    return new GrpcBooking.GrpcBookingClient(channel);
+});
 
 builder.Services.AddDbContext<EventDbContext>(x => x.UseSqlServer(builder.Configuration.GetConnectionString("SqlConnection")));
 builder.Services.AddScoped<IEventRepository, EventRepository>();

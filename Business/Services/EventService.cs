@@ -1,16 +1,19 @@
 ﻿using Business.Dtos;
+using Business.Dtos.API;
 using Business.Interfaces;
 using Business.Models;
 using Data.Entities;
 using Data.Interfaces;
+using Protos;
 using System.Diagnostics;
 using System.Reflection;
 
 namespace Business.Services;
 
-public class EventService(IEventRepository eventRepository) : IEventService
+public class EventService(IEventRepository eventRepository, GrpcBooking.GrpcBookingClient grpcBookingClient) : IEventService
 {
     private readonly IEventRepository _eventRepository = eventRepository;
+    private readonly GrpcBooking.GrpcBookingClient _grpcBookingClient = grpcBookingClient;
 
 
     // CREATE
@@ -85,6 +88,44 @@ public class EventService(IEventRepository eventRepository) : IEventService
             Category = x.Category,
             Active = x.Active,
             MaxBookings = x.MaxBookings,
+            Packages = x.Packages.Select(x => new Package
+            {
+                Id = x.Id,
+                EventId = x.EventId,
+                Title = x.Title,
+                SeatingArrangement = x.SeatingArrangement,
+                Placement = x.Placement,
+                Price = x.Price,
+                Currency = x.Currency,
+            })
+        });
+
+        return EventResult<IEnumerable<Event>>.Ok(events!);
+    }
+
+    public async Task<EventResult<IEnumerable<Event>>> GetAllEventsWithTicketsSoldAsync()
+    {
+        var grpcResponse = await _grpcBookingClient.GetTicketsSoldAmountAllEventsAsync(new GetTicketsSoldAmountAllEventsRequest());
+        if (!grpcResponse.Succeeded)
+            return EventResult<IEnumerable<Event>>.InternalServerError("Failed retrieving tickets sold over gRPC.");
+
+        var result = await _eventRepository.GetAllAsync(false, null, null, x => x.Packages);
+        if (!result.Succeeded)
+            return EventResult<IEnumerable<Event>>.InternalServerError($"Failed retrieving event entities. {result.ErrorMessage}");
+
+        var entities = result.Data;
+        var events = entities?.Select(x => new Event
+        {
+            Id = x.Id,
+            Image = x.Image,
+            Title = x.Title,
+            Description = x.Description,
+            Location = x.Location,
+            EventDate = x.EventDate,
+            Category = x.Category,
+            Active = x.Active,
+            MaxBookings = x.MaxBookings,
+            TicketsSold = grpcResponse.EventTicketsSold?.FirstOrDefault(z => z.EventId == x.Id)?.TicketsSold ?? 0,
             Packages = x.Packages.Select(x => new Package
             {
                 Id = x.Id,

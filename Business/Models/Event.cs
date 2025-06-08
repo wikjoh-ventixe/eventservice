@@ -11,6 +11,7 @@ public class Event
     public string Category { get; set; } = null!;
     public bool Active { get; set; } = true;
     public int MaxBookings { get; set; }
+    public int? TicketsSold { get; set; }
 
     public IEnumerable<Package> Packages { get; set; } = [];
 }
