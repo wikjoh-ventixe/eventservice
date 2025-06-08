@@ -1,6 +1,7 @@
 ﻿using Business.Dtos;
 using Business.Interfaces;
 using Business.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -25,6 +26,7 @@ namespace WebApi.Controllers
 
         // CREATE
         [HttpPost]
+        [Authorize(Policy = "UserOnly")]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(Package))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ValidationProblemDetails))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -40,6 +42,7 @@ namespace WebApi.Controllers
 
         // UPDATE
         [HttpPut]
+        [Authorize(Policy = "UserOnly")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Package))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ValidationProblemDetails))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -55,6 +58,7 @@ namespace WebApi.Controllers
 
         // DELETE
         [HttpDelete("{id}")]
+        [Authorize(Policy = "UserOnly")]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ValidationProblemDetails))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Delete(int id)

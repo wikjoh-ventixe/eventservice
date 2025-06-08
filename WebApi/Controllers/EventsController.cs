@@ -1,6 +1,7 @@
 ﻿using Business.Dtos;
 using Business.Interfaces;
 using Business.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
@@ -24,6 +25,7 @@ public class EventsController(IEventService eventService) : ControllerBase
     }
 
     [HttpGet("withTicketsSold")]
+    [Authorize(Policy = "UserOnly")]
     public async Task<IActionResult> GetAllWithTicketsSold()
     {
         var eventsResult = await _eventService.GetAllEventsWithTicketsSoldAsync();
@@ -46,6 +48,7 @@ public class EventsController(IEventService eventService) : ControllerBase
 
     // CREATE
     [HttpPost]
+    [Authorize(Policy = "UserOnly")]
     [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(Event))]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ValidationProblemDetails))]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -61,6 +64,7 @@ public class EventsController(IEventService eventService) : ControllerBase
 
     // UPDATE
     [HttpPut]
+    [Authorize(Policy = "UserOnly")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Event))]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ValidationProblemDetails))]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -76,6 +80,7 @@ public class EventsController(IEventService eventService) : ControllerBase
 
     // DELETE
     [HttpDelete("{id}")]
+    [Authorize(Policy = "UserOnly")]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ValidationProblemDetails))]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> Delete(string id)
